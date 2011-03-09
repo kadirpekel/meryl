@@ -5,7 +5,7 @@ with (meryl) {
   });
   
   get('/about', function(req, resp) {
-    resp.send('<h3>Meryl is simple to use, fun to play, easy to modify!</h3>');
+    resp.end('<h3>Meryl is simple to use, fun to play, easy to modify!</h3>');
   });
 }
 

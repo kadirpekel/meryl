@@ -11,29 +11,29 @@ require('http').createServer(
   
     .plug(function (req, resp, next) {
       resp.filteredSend = function (buffer) {
-        resp.send("<h1>" + buffer.toString() + "</h1>");
+        resp.end("<h1>" + buffer.toString() + "</h1>");
       };
       next();
     })
     
     .plug(function (req, resp, next) {
-      resp.headers.server = 'node';
+      resp.setHeader('server', 'node');
       console.log(req.method + ' ' + req.params.pathname);
       next();
     })
     
     .plug('POST *', function (req, resp, next) {
-      resp.status = 405;
+      resp.statusCode = 405;
       throw new Error('method not allowed');
     })
     
     .plug('{method} /private/*', function (req, resp, next) {
-      resp.status = 401;
+      resp.statusCode = 401;
       throw new Error('access denied');
     })
     
     .handle('GET /', function (req, resp) {
-      resp.send("<h1>Demonstraing Meryl</h1>");
+      resp.end("<h1>Demonstraing Meryl</h1>");
     })
     
     .handle('GET /{pagename}.html', function (req, resp) {
@@ -41,7 +41,7 @@ require('http').createServer(
     })
     
     .handle('GET /exception', function (req, resp) {
-      resp.send(1);
+      resp.end(1);
     })
     
     .cgi({debug: true})

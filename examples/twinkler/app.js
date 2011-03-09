@@ -4,7 +4,7 @@ var meryl = require('../../index'),
 
 var twinkles =  ['This is my freaking first wink', 'Hey tweeting sucks, lets twinkle'];
 
-meryl.p(Connect.staticProvider({root: 'public'}));
+meryl.p(Connect.static('public'));
 
 meryl.h('GET /', function (req, resp) {
   resp.render('index', {twinkles: twinkles});

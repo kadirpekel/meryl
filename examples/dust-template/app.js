@@ -63,7 +63,7 @@ meryl
         if (err) {
           throw err;
         }
-        resp.send(output);
+        resp.end(output);
       });
     };
     next();

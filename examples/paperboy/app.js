@@ -13,7 +13,7 @@ meryl
       });
   })
   .h('GET /', function (req, resp) {
-    resp.send("<h1>Welcome To NodeJS!</h1><img src='nodejs.png' />");
+    resp.end("<h1>Welcome To NodeJS!</h1><img src='nodejs.png' />");
   })
   .run();
 

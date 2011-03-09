@@ -20,8 +20,8 @@ exports.testCustomtNotFoundHandler = function (test) {
   httputil(
     meryl()
       .handleNotFound(function (req, resp) {
-          resp.status = 405;
-          resp.send('test data');
+          resp.statusCode = 405;
+          resp.end('test data');
         }
       )
       .cgi(),
@@ -59,8 +59,8 @@ exports.testCustomErrorHandler = function (test) {
   httputil(
     meryl()
       .handleError(function (req, resp, err) {
-          resp.status = 501;
-          resp.send(err);
+          resp.statusCode = 501;
+          resp.end(err);
         }
       )
       .h('GET /', function (req, resp) {
@@ -83,31 +83,31 @@ exports.testPluginChaining = function (test) {
   httputil(
     meryl()
       .p(function (req, resp, next) {
-        resp.headers.plugin1 = true;
+        resp.setHeader('plugin1', true);
         next();
       })
       .p('*', function (req, resp, next) {
-        resp.headers.plugin2 = true;
+        resp.setHeader('plugin2', true);
         next();
       })
       .p('GET *', function (req, resp, next) {
-        resp.headers.plugin3 = true;
+        resp.setHeader('plugin3', true);
         next();
       })
       .p('GET /', function (req, resp, next) {
-        resp.headers.plugin4 = true;
+        resp.setHeader('plugin4', true);
         next();
       })
       .p('GET /private', function (req, resp, next) {
-        resp.status = 403;
+        resp.statusCode = 403;
         throw new Error();
       })
       .p('POST /', function (req, resp, next) {
-        resp.headers.plugin5 = true;
+        resp.setHeader('plugin5', true);
         next();
       })
       .h('GET /', function (req, resp) {
-        resp.send('test data');
+        resp.end('test data');
       })
       .cgi(),
     function (server, client) {

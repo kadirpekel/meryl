@@ -6,7 +6,7 @@ var meryl = require('./../index').factory,
     httputil(
       meryl()
         .h(val + ' /', function (req, resp) {
-          resp.send(req.method);
+          resp.end(req.method);
         })
         .cgi(),
       function (server, client) {

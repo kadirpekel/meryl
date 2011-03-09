@@ -12,7 +12,7 @@ var controllerDir = 'controllers',
 datastore.load(function () {
 
   // Register plugins
-  meryl.plug(connect.staticProvider({root: staticDir}), connect.logger());
+  meryl.plug(connect.static(staticDir), connect.logger());
 
   // Loads controllers automatically
   var loadControllers = function (controllerDir, onLoad) {

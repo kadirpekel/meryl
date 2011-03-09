@@ -6,8 +6,8 @@ exports.testSinglePathVar = function (test) {
   httputil(
     meryl()
       .h('GET /{param1}', function (req, resp) {
-        resp.headers['content-type'] = 'application/json';
-        resp.send(JSON.stringify(req.params));
+        resp.setHeader('content-type', 'application/json');
+        resp.end(JSON.stringify(req.params));
       })
       .cgi(),
     function (server, client) {
@@ -48,8 +48,8 @@ exports.testSingleGreedyPathVar = function (test) {
   httputil(
     meryl()
       .h('GET /<param1>', function (req, resp) {
-        resp.headers['content-type'] = 'application/json';
-        resp.send(JSON.stringify(req.params));
+        resp.setHeader('content-type', 'application/json');
+        resp.end(JSON.stringify(req.params));
       })
       .cgi(),
     function (server, client) {
@@ -83,8 +83,8 @@ exports.testMultiplePathVars = function (test) {
   httputil(
     meryl()
       .h('GET /{param1}/{param2}/{param3}', function (req, resp) {
-        resp.headers['content-type'] = 'application/json';
-        resp.send(JSON.stringify(req.params));
+        resp.setHeader('content-type', 'application/json');
+        resp.end(JSON.stringify(req.params));
       })
       .cgi(),
     function (server, client) {
@@ -127,8 +127,8 @@ exports.testMultipleGreedyPathVars = function (test) {
   httputil(
     meryl()
       .h('GET /<param1>/<param2>', function (req, resp) {
-        resp.headers['content-type'] = 'application/json';
-        resp.send(JSON.stringify(req.params));
+        resp.setHeader('content-type', 'application/json');
+        resp.end(JSON.stringify(req.params));
       })
       .cgi(),
     function (server, client) {
@@ -163,8 +163,8 @@ exports.testMixedTypesOfPathVars = function (test) {
   httputil(
     meryl()
       .h('GET /{param1}/<param2>/{param3}', function (req, resp) {
-        resp.headers['content-type'] = 'application/json';
-        resp.send(JSON.stringify(req.params));
+        resp.setHeader('content-type', 'application/json');
+        resp.end(JSON.stringify(req.params));
       })
       .cgi(),
     function (server, client) {
