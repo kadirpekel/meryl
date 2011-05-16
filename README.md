@@ -4,6 +4,13 @@ Meryl
 Meryl is a minimalist web framework for nodejs platform.
 It is really simple to use, fun to play and easy to modify.
 
+It consists of only ~240 source lines of code. Here is the proof.
+
+```
+$ uglifyjs -b -nm --no-seqs -ns -nc meryl.js | wc -l
+     233
+```
+
 Install
 -------
 
@@ -45,9 +52,6 @@ meryl.run();
 Meryl is Connect middleware compatible. Serve static content in seconds.
 
 ``` javascript
-var connect = require('connect'),
-  meryl = require('meryl');
-
 meryl
   .plug('GET *',
     connect.favicon(),
@@ -62,9 +66,8 @@ meryl
 Love (fab)? Checkout (fab) flavored meryl.
 
 ``` javascript
-with (require('connect')) {
-	
-  require('meryl')
+with (connect) {
+  meryl
     .fabby
       (logger(), static("."))
       ('GET /', function (req, resp) {
@@ -80,19 +83,16 @@ with (require('connect')) {
         }
       )
       ();
-
 }
 ```
 
 Also taste meryl with coffeescript, using coffeekup
 
 ``` coffeescript
-coffeekup = require 'coffeekup'
-connect = require 'connect'
 
 people = ['animal', 'beakers', 'piggy', 'kermit']
 
-(require 'meryl')
+meryl
 
   .plug connect.logger(),
     connect.static(".")
@@ -115,6 +115,18 @@ people = ['animal', 'beakers', 'piggy', 'kermit']
   .run
     templateExt: '.coffee'
     templateFunc: coffeekup.adapters.meryl
+```
+
+You can of course use its cgi interface.
+
+``` javascript
+require('http').createServer(
+  meryl
+    .get('/', function (req, resp) {
+      resp.end("<h1>Demonstraing Meryl</h1>");
+    })
+    .cgi()
+).listen(3000);
 ```
 
 Meryl has much more, please continue from the links below.
