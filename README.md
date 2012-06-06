@@ -132,10 +132,10 @@ require('http').createServer(
 Meryl has much more, please continue from the links below.
 
 Please visit wiki page for documentation:
-  <http://github.com/coffeemate/meryl/wiki>
+  <http://github.com/kadirpekel/meryl/wiki>
 
 Also there are plenty of examples in 'examples' directory:
-  <http://github.com/coffeemate/meryl/tree/master/examples>
+  <http://github.com/kadirpekel/meryl/tree/master/examples>
 
 For updates please follow:
   <http://twitter.com/meryljs>
