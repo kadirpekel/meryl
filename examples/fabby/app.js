@@ -2,7 +2,7 @@ with (require('connect')) {
 
   require('../../index')  // meryl
     .fabby
-      (logger(), static("."))
+      (logger(), static(__dirname))
       ('GET /', function (req, resp) {
           resp.render('home');
         }

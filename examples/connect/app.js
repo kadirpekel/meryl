@@ -1,4 +1,4 @@
-var Connect = require('connect'),
+var connect = require('connect'),
   meryl = require('../../index');
 
 meryl
@@ -7,11 +7,11 @@ meryl
       resp.setHeader('backend', 'nodejs/connect/meryl');
       next();
     },
-    Connect.logger()
+    connect.logger()
   )  
   .p('GET *',
-    Connect.favicon(),
-    Connect.static(".")
+    connect.favicon(),
+    connect.static(__dirname)
   )
   .h('GET /', function (req, resp) {
     resp.end("<h1>Welcome To NodeJS!</h1><img src='nodejs.png' />");

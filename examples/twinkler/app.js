@@ -1,10 +1,11 @@
 var meryl = require('../../index'),
-  Connect = require('connect'),
+  connect = require('connect'),
   qs = require('querystring');
 
 var twinkles =  ['This is my freaking first wink', 'Hey tweeting sucks, lets twinkle'];
 
-meryl.p(Connect.static('public'));
+meryl.p(connect.static(__dirname + '/public'));
+meryl.p(connect.bodyParser());
 
 meryl.h('GET /', function (req, resp) {
   resp.render('index', {twinkles: twinkles});

@@ -7,5 +7,5 @@ module.exports = function (meryl) {
   
   meryl.options.templateExt = '.mt', // Default is '.jshtml'
   
-  meryl.plug(connect.static("."), connect.logger());
+  meryl.plug(connect.static(__dirname), connect.logger());
 };

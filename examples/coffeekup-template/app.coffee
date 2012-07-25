@@ -6,7 +6,7 @@ people = ['animal', 'beakers', 'piggy', 'kermit']
 (require '../../index')
 
   .plug connect.logger(),
-    connect.static(".")
+    connect.static(__dirname)
 
   .get '/', (req, resp) ->
     resp.redirect('/people')
