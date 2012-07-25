@@ -1,0 +1,407 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Meryl by kadirpekel</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Meryl</h1>
+        <p>Minimalist web framework for nodejs</p>
+
+        <p class="view"><a href="https://github.com/kadirpekel/meryl">View the Project on GitHub <small>kadirpekel/meryl</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/kadirpekel/meryl/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/kadirpekel/meryl/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/kadirpekel/meryl">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>About</h1>
+
+<p>Meryl is a minimalist web framework for <a href="http://github.com/ry/node">nodejs</a> platform which is very simple to use, fun to play and easy to modify.</p>
+
+<p>Meryl remains as thin web layer over nodejs's built-in http module which mainly consists of plugins and handlers processed through every http request and response pipe.</p>
+
+<p><img src="https://github.com/kadirpekel/meryl/wiki/images/infog.png" alt="layers"></p>
+
+<p>Despite the small size of its code base, it has plenty of promising features. Some of the feature highlights are:</p>
+
+<ul>
+<li>Flexible architecture</li>
+<li>Url routing with an easy expression syntax.</li>
+<li>Powerful middleware infrastructure. Also compatible with <a href="http://github.com/senchalabs/connect%5D">connect</a>framework.</li>
+<li>Modular template rendering mechanism. You can choose using your mother's template engine.</li>
+<li>Dynamic template serving.</li>
+<li>Command line util for ad-hoc setup.</li>
+</ul><p>It consists of only ~240 source lines of code. Here is the proof.</p>
+
+<pre><code>$ uglifyjs -b -nm --no-seqs -ns -nc meryl.js | wc -l
+     233
+</code></pre>
+
+<h1>Install</h1>
+
+<p>Use <a href="http://github.com/isaacs/npm">npm</a> for painless, quicky experience.</p>
+
+<div class="highlight"><pre>npm install meryl
+</pre></div>
+
+<p>If you don't have npm, you can simply put meryl in your '$HOME/.node_libraries' directory.</p>
+
+<div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/.node_libraries
+git clone http://github.com/coffeemate/meryl.git
+</pre></div>
+
+<p>Yep, it's ready already. Now you can use it in your applications by loading as usual in nodejs.</p>
+
+<div class="highlight"><pre><span class="c1">// app.js</span>
+<span class="kd">var</span> <span class="nx">meryl</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'meryl'</span><span class="p">);</span>
+
+<span class="c1">// Use meryl instance here</span>
+</pre></div>
+
+<h1>Quickstart</h1>
+
+<p>If you installed Meryl sucessfully, now you are ready to get your feet wet. Create a file named 'app.js' with the copy of contents below.</p>
+
+<div class="highlight"><pre><span class="c1">// app.js</span>
+
+<span class="kd">var</span> <span class="nx">meryl</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'meryl'</span><span class="p">);</span>
+
+<span class="nx">meryl</span><span class="p">.</span><span class="nx">h</span><span class="p">(</span><span class="s1">'GET /{yourname}?'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">resp</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s1">'Hello, '</span> <span class="o">+</span> <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">yourname</span> <span class="o">||</span> <span class="s1">'World'</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">meryl</span><span class="p">.</span><span class="nx">run</span><span class="p">();</span>
+</pre></div>
+
+<p>Ok, let's run it.</p>
+
+<pre lang="plain"><code>$ node app.js
+</code></pre>
+
+<p>Now, go hit your http client with the url <a href="http://localhost:3000">http://localhost:3000</a>, also try <a href="http://localhost:3000/meryl">http://localhost:3000/meryl</a> and guess what you will see.</p>
+
+<h1>Documentation</h1>
+
+<h2>Meryl request</h2>
+
+<p>Meryl extended http request object passed as a parameter to meryl.h and meryl.p callback functions which gives you some utilities to handle http request data coming from the client.</p>
+
+<h3>req.params</h3>
+
+<p>Object containing query string and path parameters with url info</p>
+
+<div class="highlight"><pre><span class="nx">meryl</span><span class="p">.</span><span class="nx">h</span><span class="p">(</span><span class="s1">'GET /list/{item}'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// try: GET /list/comments?pagesize=10</span>
+  <span class="nx">resp</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s1">'Listing '</span> <span class="o">+</span> <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">pagesize</span> <span class="o">+</span> <span class="s1">' '</span>
+    <span class="o">+</span> <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">item</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>req.postdata</h3>
+
+<p>Buffer object received from the clients. It's a raw data which must be processed to refine if required</p>
+
+<div class="highlight"><pre><span class="nx">meryl</span><span class="p">.</span><span class="nx">h</span><span class="p">(</span><span class="s1">'POST /preview'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// echo post data as text</span>
+  <span class="nx">resp</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="s1">'content-type'</span><span class="p">,</span> <span class="s1">'text/plain'</span><span class="p">);</span>
+  <span class="nx">resp</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">postdata</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<h2>Meryl response</h2>
+
+<p>Meryl extended http response object passed as a parameter to meryl.h and meryl.p callback functions which gives you some utilities to shape http response data delivering to the client.</p>
+
+<h3>resp.render(templateName, data)</h3>
+
+<p>Renders a template name by manipulating it with given context data.</p>
+
+<div class="highlight"><pre><span class="nx">meryl</span><span class="p">.</span><span class="nx">h</span><span class="p">(</span><span class="s1">'GET /'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">resp</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">'homepage'</span><span class="p">,</span> <span class="p">{</span><span class="nx">foo</span><span class="o">:</span> <span class="s1">'bar'</span><span class="p">});</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>resp.redirect(location)</h3>
+
+<p>Helper method that redirects client request to another location.</p>
+
+<div class="highlight"><pre><span class="nx">meryl</span><span class="p">.</span><span class="nx">h</span><span class="p">(</span><span class="s1">'GET /'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">resp</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="s1">'/another_page'</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<h2>Meryl</h2>
+
+<p>The Meryl object itself.</p>
+
+<h3>meryl.options</h3>
+
+<p>Options object which is used to configure meryl</p>
+
+<p>There are three pre-defined options. These are:</p>
+
+<ul>
+<li>templateDir: Used to point the path of directory containing the templates. Default is an empty string.</li>
+<li>templateExt: Template file extension. The default is '.jshtml'</li>
+<li>templateFunc: Template rendering engine interface. This option takes a function which take two parameters. First one is the string content of the template while the second one is template context object. See 'examples' directory for sample applications.</li>
+</ul><h3>meryl.handle(expr, callback)</h3>
+
+<p>Registers a new http handler to global Meryl instance. First argument is the routing pattern which combines http verb with path expression while the second one is the callback function which will be executed in meryl context. If router pattern matches any http request the given callback executed with current req, resp objects.</p>
+
+<p>If more than one handlers registered with same router pattern only the first registered one will be executed.</p>
+
+<p>Routing pattern is very simple in mind:</p>
+
+<pre lang="plain"><code>$HTTP_VERB $PATH_EXPRESSION
+</code></pre>
+
+<p>The whole expression builds a meryl flavored reqular expression which exposes two types of path parameters.</p>
+
+<ul>
+<li>{ ... } – curly braced parameters are partial, they match until the meet '?', '/' or '.' character</li>
+<li>&lt; ... &gt; – tagged(!) parameters are greedy, they match whatever they meet until you denote a block character.</li>
+</ul><p>Here are some examples:</p>
+
+<ul>
+<li>{method} </li>
+<li>GET /</li>
+<li>POST /index.html</li>
+<li>PUT /long/path/index.html</li>
+<li>DELETE /delete/something?foo=bar</li>
+<li>GET /posts/{postid}</li>
+<li>GET /posts/this-is-a-long-post-id</li>
+<li>GET /posts/32432</li>
+<li>GET /files/.{ext}</li>
+<li>GET /files/filename.pdf</li>
+<li>GET /files/this/is/a/long/file/path.pdf</li>
+<li>GET /(index.html)?</li>
+<li>GET /</li>
+<li>GET /index.html</li>
+</ul><p>Let's take look at a concrete example like below:</p>
+
+<div class="highlight"><pre><span class="nx">meryl</span><span class="p">.</span><span class="nx">h</span><span class="p">(</span><span class="s1">'GET /repo/&lt;filepath&gt;/{version}'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">var</span> <span class="nx">fileContents</span> <span class="o">=</span> <span class="nx">readRepo</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">filepath</span><span class="p">,</span> <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">version</span><span class="p">);</span>
+  <span class="nx">resp</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="nx">fileContents</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>Also there are shorthand helper functions mapped to individual http methods. You can declare handlers implicitly by using meryl.get(expr, callback), meryl.post(expr, callback), meryl.put(expr, callback), meryl.put(expr, callback) functions. You must omit explicit http method names in expressions</p>
+
+<div class="highlight"><pre><span class="nx">meryl</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">'/posts/{postid}'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">resp</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s1">'reading post: '</span> <span class="o">+</span> <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">postid</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">meryl</span><span class="p">.</span><span class="nx">put</span><span class="p">(</span><span class="s1">'/'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">throw</span> <span class="s1">'not supported'</span><span class="p">;</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>meryl.plug([expr,] callback [, callback])</h3>
+
+<p>This function registers a plugin to the global meryl instance. More than one plugin can be executed on the same matched http request within the registration order. Plugin system simply exposes a middleware implementation for Meryl.</p>
+
+<p>First argument is a router pattern which is also mentioned in meryl.h before.</p>
+
+<p>The second one is the callback function which takes usual req, resp objects and alsa a function reference argument named 'next'. If you finished your work inside the plugin, you simply call 'next' to jump over to the next registered plugin.</p>
+
+<p>You may want to break plugin iteration, then do not call 'next' method but be sure to end the http response in some way. Otherwise all the request/response pipe will hang which makes no sense for client side.</p>
+
+<p>Here is a sample application demonstrating plugins.</p>
+
+<div class="highlight"><pre><span class="c1">// app.js</span>
+
+<span class="kd">var</span> <span class="nx">meryl</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'meryl'</span><span class="p">);</span>
+
+<span class="kd">function</span> <span class="nx">validate</span><span class="p">(</span><span class="nx">u</span><span class="p">,</span> <span class="nx">p</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="kc">false</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="nx">meryl</span><span class="p">.</span><span class="nx">p</span><span class="p">(</span><span class="s1">'*'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">resp</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="s1">'server'</span><span class="p">,</span> <span class="s1">'meryl-nodejs'</span><span class="p">);</span>
+  <span class="nx">next</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="nx">meryl</span><span class="p">.</span><span class="nx">p</span><span class="p">(</span><span class="s1">'{method} /private/*'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span><span class="p">(</span><span class="nx">validate</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">uname</span><span class="p">,</span> <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">passwd</span><span class="p">))</span> <span class="p">{</span>
+    <span class="nx">next</span><span class="p">();</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="nx">resp</span><span class="p">.</span><span class="nx">statusCode</span> <span class="o">=</span> <span class="mi">401</span><span class="p">;</span>
+    <span class="k">throw</span> <span class="s1">'access denied'</span><span class="p">;</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+<span class="nx">meryl</span><span class="p">.</span><span class="nx">p</span><span class="p">(</span><span class="s1">'GET *'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s1">'logging all GET requests'</span><span class="p">);</span>
+  <span class="nx">next</span><span class="p">();</span>
+<span class="p">});</span>
+
+<span class="nx">meryl</span><span class="p">.</span><span class="nx">h</span><span class="p">(</span><span class="s1">'GET /(index.html)?'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">resp</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s1">'Demonstrating plugins'</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">require</span><span class="p">(</span><span class="s1">'http'</span><span class="p">).</span><span class="nx">createServer</span><span class="p">(</span><span class="nx">meryl</span><span class="p">.</span><span class="nx">cgi</span><span class="p">()).</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">);</span>
+</pre></div>
+
+<p>If you pass only callback function as first parameter by omitting expression Meryl assumes expression as '*' to match all requests.</p>
+
+<div class="highlight"><pre><span class="nx">meryl</span><span class="p">.</span><span class="nx">p</span><span class="p">(</span><span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">resp</span><span class="p">.</span><span class="nx">setHeader</span><span class="p">(</span><span class="s1">'server'</span><span class="p">,</span> <span class="nx">meryl</span><span class="o">-</span><span class="nx">nodejs</span><span class="err">'</span><span class="p">);</span>
+    <span class="nx">next</span><span class="p">();</span>
+<span class="p">});</span>
+</pre></div>
+
+<p>Also you should mind appending more callbacks. It is very useful when registering pre-defined modules.</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">connect</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">);</span>
+<span class="nx">meryl</span><span class="p">.</span><span class="nx">p</span><span class="p">(</span><span class="nx">connect</span><span class="p">.</span><span class="kr">static</span><span class="p">(</span><span class="s1">'/srv/static_content'</span><span class="p">),</span> <span class="nx">connect</span><span class="p">.</span><span class="nx">logger</span><span class="p">());</span>
+<span class="nx">meryl</span><span class="p">.</span><span class="nx">run</span><span class="p">();</span>
+</pre></div>
+
+<h3>meryl.fabby([opts] | ([expr] [,callback [, callback]]))</h3>
+
+<p>This is a funny function which features fabjs like chaining of Meryl plugins and handlers.</p>
+
+<div class="highlight"><pre><span class="kd">var</span> <span class="nx">connect</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">meryl</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">'meryl'</span><span class="p">);</span>
+
+<span class="nx">meryl</span><span class="p">.</span><span class="nx">fabby</span>
+  <span class="p">(</span><span class="nx">connect</span><span class="p">.</span><span class="nx">logger</span><span class="p">(),</span> <span class="nx">connect</span><span class="p">.</span><span class="kr">static</span><span class="p">(</span><span class="s1">'/srv/static_content'</span><span class="p">))</span>
+  <span class="p">(</span><span class="s1">'GET /'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">resp</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">'home'</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">)</span>
+  <span class="p">(</span><span class="s1">'GET /posts/{postid}'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">resp</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">'post'</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">)</span> 
+  <span class="p">(</span><span class="s1">'GET /posts/{postid}/comments/{commentid}'</span><span class="p">,</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span>
+      <span class="nx">resp</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">'comment'</span><span class="p">);</span>
+    <span class="p">}</span>
+  <span class="p">)</span>  
+  <span class="p">();</span>
+</pre></div>
+
+<h3>meryl.handleNotFound(cb)</h3>
+
+<p>Custom 404 file not found handler</p>
+
+<h3>meryl.handleError(cb)</h3>
+
+<p>Custom 500 server error handler</p>
+
+<h3>meryl.factory()</h3>
+
+<p>returns a new Meryl instance</p>
+
+<h3>meryl.cgi(opts)</h3>
+
+<p>It's the main entry point for Meryl. It returns a function reference for using with nodejs's built-in http module while creating a server instance. You can pass an object for further using in Meryl context such 'this.options'.</p>
+
+<div class="highlight"><pre><span class="nx">require</span><span class="p">(</span><span class="s1">'http'</span><span class="p">).</span><span class="nx">createServer</span><span class="p">(</span><span class="nx">meryl</span><span class="p">.</span><span class="nx">cgi</span><span class="p">({</span><span class="nx">debug</span><span class="o">:</span><span class="kc">true</span><span class="p">})).</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">);</span>
+</pre></div>
+
+<h3>meryl.run(opts)</h3>
+
+<p>Helper function that runs Meryl instantly by wrapping it with an internally created http server. It returns running http server instance.</p>
+
+<div class="highlight"><pre><span class="nx">meryl</span><span class="p">.</span><span class="nx">run</span><span class="p">({</span><span class="nx">debug</span><span class="o">:</span><span class="kc">true</span><span class="p">,</span> <span class="nx">port</span><span class="o">:</span> <span class="mi">8080</span><span class="p">}))</span>
+</pre></div>
+
+<h1>Guide</h1>
+
+<ul>
+<li>You can chain plugin and handler declerations as well.</li>
+<li>You may choose using verbose function names instead single letter ones.</li>
+<li>If you want to register a plugin for processing all requests you can simply pass only your callback to the meryl.p function.</li>
+<li>You can mark path expression variables as optional using a trailing question mark.</li>
+<li>Meryl is Connect framework compatible. You can plug any Connect middleware module to Meryl.</li>
+<li>Below the example demonstrates all the tips above.</li>
+</ul><div class="highlight"><pre><span class="nx">require</span><span class="p">(</span><span class="s1">'http'</span><span class="p">).</span><span class="nx">createServer</span><span class="p">(</span>
+      <span class="nx">require</span><span class="p">(</span><span class="s1">'meryl'</span><span class="p">)</span>
+
+        <span class="p">.</span><span class="nx">plug</span><span class="p">(</span><span class="nx">require</span><span class="p">(</span><span class="s1">'connect'</span><span class="p">).</span><span class="kr">static</span><span class="p">(</span><span class="s1">'/srv/static_content'</span><span class="p">))</span>
+
+        <span class="p">.</span><span class="nx">plug</span><span class="p">(</span>
+          <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span> <span class="nx">log</span><span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">pathname</span><span class="p">);</span> <span class="nx">next</span><span class="p">();</span> <span class="p">})</span>
+
+        <span class="p">.</span><span class="nx">plug</span><span class="p">(</span><span class="s1">'POST *'</span><span class="p">,</span>
+          <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">{</span> <span class="k">throw</span> <span class="s1">'restricted'</span><span class="p">;</span> <span class="p">})</span>
+
+        <span class="p">.</span><span class="nx">handle</span><span class="p">(</span><span class="s1">'GET /'</span><span class="p">,</span>
+          <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s1">'homepage'</span><span class="p">);</span> <span class="p">})</span>
+
+        <span class="p">.</span><span class="nx">handle</span><span class="p">(</span><span class="s1">'GET /greet/({who}.html)?'</span><span class="p">,</span>
+          <span class="kd">function</span><span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">resp</span><span class="p">)</span> <span class="p">{</span> <span class="nx">resp</span><span class="p">.</span><span class="nx">end</span><span class="p">(</span><span class="s1">'Hello, '</span> <span class="o">+</span> <span class="nx">req</span><span class="p">.</span><span class="nx">params</span><span class="p">.</span><span class="nx">who</span> <span class="o">||</span> <span class="s1">'World'</span><span class="p">);</span> <span class="p">})</span>
+
+        <span class="p">.</span><span class="nx">cgi</span><span class="p">()</span>
+      <span class="p">).</span><span class="nx">listen</span><span class="p">(</span><span class="mi">3000</span><span class="p">);</span>
+</pre></div>
+
+<h1>Source</h1>
+
+<p>Meryl uses lovely git and github. You can find sources here. To obtain a copy, simply type:</p>
+
+<div class="highlight"><pre>git clone http://github.com/coffeemate/meryl.git
+</pre></div>
+
+<p>Meryl itself is licensed under MIT License <a href="http://github.com/coffeemate/meryl/blob/master/license">http://github.com/coffeemate/meryl/blob/master/license</a></p>
+
+<p>There are some kind people contributes to this project. Please join and help us to move Meryl ahead together.</p>
+
+<ul>
+<li>Kadir Pekel (Author) <a href="http://twitter.com/kadirpekel">http://twitter.com/kadirpekel</a>
+</li>
+<li>George Stagas <a href="http://twitter.com/stagas">http://twitter.com/stagas</a>
+</li>
+<li>Samuel Morello <a href="http://twitter.com/ouvanous">http://twitter.com/ouvanous</a>
+</li>
+<li>Michael Siebert <a href="http://twitter.com/siebertm">http://twitter.com/siebertm</a>
+</li>
+<li>Vladimir <a href="http://github.com/semanticprogrammer">http://github.com/semanticprogrammer</a>
+</li>
+<li>Tom R <a href="http://www.twitter.com/rx">http://www.twitter.com/rx</a>
+</li>
+</ul><h1>More</h1>
+
+<p>Meryl has much more, please continue from the links below.</p>
+
+<p>Please visit wiki page for documentation:
+  <a href="http://github.com/kadirpekel/meryl/wiki">http://github.com/kadirpekel/meryl/wiki</a></p>
+
+<p>Also there are plenty of examples in 'examples' directory:
+  <a href="http://github.com/kadirpekel/meryl/tree/master/examples">http://github.com/kadirpekel/meryl/tree/master/examples</a></p>
+
+<p>For updates please follow:
+  <a href="http://twitter.com/meryljs">http://twitter.com/meryljs</a></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/kadirpekel">kadirpekel</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+              <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-2040979-9");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
+
+  </body>
+</html>
