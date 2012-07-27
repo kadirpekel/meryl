@@ -9,7 +9,7 @@
 </ul>
 
 <form action="/newwink" method="post">
-  <textarea name="wink" rows="3" colums="20" max-length="140" wrap="soft"></textarea>
+  <input name="wink"max-length="140"></input>
   <input type="submit" value="wink" />
 </form>
 <%= render('footer') %>

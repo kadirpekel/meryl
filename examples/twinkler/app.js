@@ -1,25 +1,29 @@
 var meryl = require('../../index'),
-  connect = require('connect'),
-  qs = require('querystring');
+  connect = require('connect');
 
-var twinkles =  ['This is my freaking first wink', 'Hey tweeting sucks, lets twinkle'];
+var twinkles = [
+  'This is my first wink',
+  'Lets twinkle for a second'
+];
 
-meryl.p(connect.static(__dirname + '/public'));
-meryl.p(connect.bodyParser());
+meryl
 
-meryl.h('GET /', function (req, resp) {
-  resp.render('index', {twinkles: twinkles});
-});
+  .plug(
+    connect.logger(),
+    connect.static(__dirname + '/public'),
+    connect.bodyParser()
+  )
 
-meryl.h('POST /newwink', function (req, resp) {
-  var postdataAsObject = qs.parse(req.postdata.toString());
-  if (postdataAsObject && postdataAsObject.wink) {
-    twinkles.push(postdataAsObject.wink);
-  }
-  resp.redirect('/');
-});
+  .get('/', function (req, resp) {
+    resp.render('index', {twinkles: twinkles});
+  })
 
-meryl.run({templateDir: 'views'});
+  .post('/newwink', function (req, resp) {
+    twinkles.push(req.body.wink);
+    resp.redirect('/');
+  })
+
+  .run({templateDir: 'views'});
 
 console.log('listening...');
 
